@@ -1,15 +1,23 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import bodyParser from 'body-parser'
-import client from './database'
+import morgan from 'morgan'
 
-const app: express.Application = express()
+import client from './database'
+import productsRoute from './routes/products'
+import usersRoute from './routes/users'
+
+const app = express()
 const address = '0.0.0.0:3000'
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
 
-app.get('/', function (req: Request, res: Response) {
+app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
+app.use('/user', usersRoute)
+app.use('/product', productsRoute)
 
 app.listen(3000, function () {
   console.log(`starting app on: ${address}`)
