@@ -1,9 +1,12 @@
 import client from '../database'
-export type user = {
-  id: string
-  firstName: string
-  lastName: string
+export interface coreUser {
+  id?: string | number
+  firstname: string
+  lastname: string
   password: string
+}
+export interface user extends coreUser {
+  id: string | number
 }
 export class UserStore {
   async index(): Promise<user[]> {
@@ -29,7 +32,7 @@ export class UserStore {
       throw new Error('Cannot get the user with id ' + id + 'error' + error)
     }
   }
-  async update(id: string, u: user): Promise<user> {
+  async update(id: string, u: coreUser): Promise<user> {
     try {
       const conn = await client.connect()
       const query = `SELECT * FROM users WHERE id=($1)`
@@ -42,23 +45,33 @@ export class UserStore {
       throw new Error('Cannot update the user with id ' + id + 'error' + error)
     }
   }
-  async create(u: user): Promise<user> {
-    const conn = await client.connect()
-    const sql =
-      'INSERT INTO users (firstname, lastname,password) VALUES($1, $2, $3) RETURNING *'
-    const result = await conn.query(sql, [u.firstName, u.lastName, u.password])
-    const user = result.rows[0]
-    conn.release()
-    return user
+  async create(u: coreUser): Promise<user> {
+    try {
+      const conn = await client.connect()
+      const sql =
+        'INSERT INTO users (firstname, lastname,password) VALUES($1, $2, $3) RETURNING *'
+      const result = await conn.query(sql, [
+        u.firstname,
+        u.lastname,
+        u.password,
+      ])
+      const user = result.rows[0]
+      conn.release()
+      return user
+    } catch (error) {
+      throw Error(`can't create user with name ${u.firstname} error ${error}`)
+    }
   }
   async delete(id: string): Promise<user[]> {
-    const conn = await client.connect()
-    const sql = 'DELETE FROM users WHERE id=($1)'
-    await conn.query(sql, [id])
-    const products = (await conn.query(
-      'SELECT * FROM users'
-    )) as unknown as user[]
-    conn.release()
-    return products
+    try {
+      const conn = await client.connect()
+      const sql = 'DELETE FROM users WHERE id=($1)'
+      await conn.query(sql, [id])
+      const products = await conn.query<user>('SELECT * FROM users')
+      conn.release()
+      return products.rows
+    } catch (error) {
+      throw Error(`can't delete user with id:${id} Error ${error}`)
+    }
   }
 }

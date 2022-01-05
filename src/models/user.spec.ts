@@ -1,8 +1,13 @@
+import client from '../database'
 import { UserStore } from './user'
 
 const store = new UserStore()
 
-describe('Product Model', () => {
+describe('User Model', () => {
+  afterAll(async () => {
+    const conn = await client.connect()
+    await conn.query(`DELETE FROM users;`)
+  })
   it('should have an index method', () => {
     expect(store.index).toBeDefined()
   })
@@ -25,37 +30,37 @@ describe('Product Model', () => {
 
   it('create method should add a product', async () => {
     const result = await store.create({
-      id: '1',
-      firstName: 'ahmed',
-      lastName: 'khalifa',
+      id: 1,
+      firstname: 'ahmed',
+      lastname: 'khalifa',
       password: '123456789',
     })
-    //TODO password
-    expect(result).toContain({
-      id: '1',
-      firstName: 'ahmed',
-      lastName: 'khalifa',
+    expect(result).toEqual({
+      id: 1,
+      firstname: 'ahmed',
+      lastname: 'khalifa',
+      password: '123456789',
     })
   })
 
-  it('index method should return a list of books', async () => {
+  it('index method should return a list of users', async () => {
     const result = await store.index()
     expect(result).toEqual([
       {
-        id: '1',
-        firstName: 'ahmed',
-        lastName: 'khalifa',
+        id: 1,
+        firstname: 'ahmed',
+        lastname: 'khalifa',
         password: '123456789',
       },
     ])
   })
 
-  it('show method should return the correct book', async () => {
+  it('show method should return the correct user', async () => {
     const result = await store.show('1')
     expect(result).toEqual({
-      id: '1',
-      firstName: 'ahmed',
-      lastName: 'khalifa',
+      id: 1,
+      firstname: 'ahmed',
+      lastname: 'khalifa',
       password: '123456789',
     })
   })
