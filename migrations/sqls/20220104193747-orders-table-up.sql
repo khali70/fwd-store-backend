@@ -1,6 +1,12 @@
-CREATE TYPE order_state AS ENUM ('active', 'complete');
-CREATE TABLE orders(
+
+CREATE TABLE IF NOT EXISTS users(
+  id SERIAL PRIMARY KEY,
+  firstName VARCHAR(100) NOT NULL,
+  lastName VARCHAR(100),
+  password VARCHAR NOT NULL
+);
+CREATE TABLE IF NOT EXISTS orders(
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  status order_state DEFAULT 'active'
+  status VARCHAR(50) DEFAULT 'active'
 );
