@@ -5,12 +5,14 @@ import morgan from 'morgan'
 import client from './database'
 import productsRoute from './routes/products'
 import usersRoute from './routes/users'
-
+import dotenv from 'dotenv'
+dotenv.config()
 const app = express()
 const address = '0.0.0.0:3000'
 
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
+
+if (process.env.ENV !== 'test') app.use(morgan('tiny'))
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -30,3 +32,4 @@ app.listen(3000, function () {
       )
     )
 })
+export default app

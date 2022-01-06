@@ -16,8 +16,6 @@ export const orderRoute = async (
     res.status(200)
     res.contentType('application/json')
     res.send(order)
-    // current order by user
-    console.log(JSON.stringify(req.params, null, 2))
   } catch (error) {
     res.status(500)
     res.contentType('application/json')
