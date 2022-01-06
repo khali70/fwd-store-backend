@@ -1,6 +1,7 @@
 import client from '../database'
 import supertest from 'supertest'
 import app from '../server'
+import { testingToken } from '../token'
 
 const request = supertest(app)
 
@@ -21,7 +22,10 @@ describe(`Users Route`, () => {
     conn.release()
   })
   it('get /user with token should return all users', async () => {
-    const response = await request.get('/user')
+    const response = await request
+      .get('/user')
+      .set('Content-type', 'application/json')
+      .set('authorization', testingToken)
     expect(response.statusCode).toEqual(200)
     expect(response.body).toEqual([
       {
@@ -34,7 +38,10 @@ describe(`Users Route`, () => {
   })
 
   it('get /user/:userId with token should return the correct user', async () => {
-    const response = await request.get('/user/1')
+    const response = await request
+      .get('/user/1')
+      .set('Content-type', 'application/json')
+      .set('authorization', testingToken)
     expect(response.statusCode).toEqual(200)
     expect(response.body).toEqual({
       id: 1,
@@ -45,11 +52,15 @@ describe(`Users Route`, () => {
   })
 
   it('post /user with token should return success', async () => {
-    const response = await request.post('/user').send({
-      firstname: 'user',
-      lastname: 'Do',
-      password: '12345678',
-    })
+    const response = await request
+      .post('/user')
+      .set('Content-type', 'application/json')
+      .set('authorization', testingToken)
+      .send({
+        firstname: 'user',
+        lastname: 'Do',
+        password: '12345678',
+      })
     expect(response.statusCode).toEqual(200)
   })
 })

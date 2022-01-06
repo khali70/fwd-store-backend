@@ -8,9 +8,32 @@ Your application must make use of the following libraries:
 - Node for the application logic
 - yarn for node pkg manager
 
-## Getting Started
+## Project setup
 
-**install the lib**
+> ### the app runs on port `3000`
+
+### DataBase setup
+
+> if you have docker feel free to run `docker-compose up` skip this step
+
+#### 1. create user
+
+```sql
+CREATE USER <username> WITH PASSWORD '<password>';
+ALTER USER <username> CREATEDB;
+```
+
+#### 1. Create database
+
+```sql
+-- dev database
+CREATE DATABASE storefront;
+
+-- testing database
+CREATE DATABASE storefront_test;
+```
+
+### instal node_modules
 
 ```sh
 yarn install
@@ -18,13 +41,15 @@ yarn install
 
 ### setup the environment variables
 
+> #### you can find `.env` and `database.json` in the project root folder
+
 create `.env` file in the root of the project with the config
 
 ```env
 POSTGRES_USER=<DB_user>
 POSTGRES_PASSWORD=<DB_password>
-POSTGRES_DB=<DB_name>
-POSTGRES_TEST_DB=<testing_DB_name>
+POSTGRES_DB=storefront
+POSTGRES_TEST_DB=storefront_test
 POSTGRES_HOST=<DB_host>
 BCRYPT_PASSWORD=<BCrypt_password>
 SALT_ROUNDS=10
@@ -95,6 +120,8 @@ My `database.json` config was
 }
 ```
 
+> **you can add the data in `./test-data.sql` to Data Base for testing**
+
 ## scripts
 
 ### start
@@ -119,21 +146,12 @@ yarn run test
 yarn run build
 ```
 
-## API Endpoints
+### DB Migrate
 
-#### Products
+```sh
+# migrate up
+yarn run migrate:up
 
-- Index `get` at [product/](http://localhost:3000/product/)
-- Show `get` at [product/:productId](http://localhost:3000/product/1)
-- Create [token required] `post` at [product/](http://localhost:3000/product/)
-
-#### Users
-
-- Index [token required] `get` at [user/](http://localhost:3000/user)
-- Show [token required] `get` at [user/:userId](http://localhost:3000/user/1)
-- Create N[token required] `post` at [user/](http://localhost:3000/user)
-
-#### Orders
-
-- Current Order by user (args: user id)[token required] `get` at [user/:userId/product]
-- [OPTIONAL] Completed Orders by user (args: user id)[token required]
+# migrate down
+yarn run migrate:down
+```

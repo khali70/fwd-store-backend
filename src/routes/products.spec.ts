@@ -1,6 +1,7 @@
 import client from '../database'
 import supertest from 'supertest'
 import app from '../server'
+import { testingToken } from '../token'
 
 const request = supertest(app)
 
@@ -43,10 +44,14 @@ describe(`Products Route`, () => {
   })
 
   it('post /product with token should return success', async () => {
-    const response = await request.post('/product').send({
-      name: 'tea',
-      price: '14',
-    })
+    const response = await request
+      .post('/product')
+      .set('Content-type', 'application/json')
+      .set('authorization', testingToken)
+      .send({
+        name: 'tea',
+        price: '14',
+      })
     expect(response.statusCode).toEqual(200)
   })
 })

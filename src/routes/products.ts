@@ -1,10 +1,9 @@
 import express, { Request, Response } from 'express'
 import { ProductStore, product, coreProduct } from '../models/product'
+import { token } from '../token'
 
 const Router = express.Router()
-const token = async (req: Request, res: Response, next: () => void) => {
-  next()
-}
+
 Router.get('/', async (req, res) => {
   const store = new ProductStore()
   const products = await store.index()

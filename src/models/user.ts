@@ -1,4 +1,7 @@
 import client from '../database'
+import bcrypt from 'bcrypt'
+import dotenv from 'dotenv'
+dotenv.config()
 export interface coreUser {
   id?: string | number
   firstname: string
@@ -72,6 +75,26 @@ export class UserStore {
       return products.rows
     } catch (error) {
       throw Error(`can't delete user with id:${id} Error ${error}`)
+    }
+  }
+  async auth(firstname: string, password: string) {
+    try {
+      const conn = await client.connect()
+      const query = `SELECT * FROM users WHERE firstname=($1)`
+      const result = await conn.query<user>(query, [firstname])
+      const u = result.rows[0]
+      conn.release()
+      const paper = process.env.BCRYPT_PASSWORD
+        ? process.env.BCRYPT_PASSWORD
+        : ''
+      if (bcrypt.compareSync(password + paper, u.password)) {
+        return u
+      }
+      return null
+    } catch (error) {
+      throw new Error(
+        'Cannot auth the user with name ' + firstname + ' error' + error
+      )
     }
   }
 }

@@ -1,6 +1,7 @@
 import client from '../database'
 import supertest from 'supertest'
 import app from '../server'
+import { testingToken } from '../token'
 
 const request = supertest(app)
 
@@ -31,7 +32,10 @@ describe(`Orders Route`, () => {
   })
 
   it('get /user/:userId/order with token should return the correct user', async () => {
-    const response = await request.get('/user/1/order')
+    const response = await request
+      .get('/user/1/order')
+      .set('Content-type', 'application/json')
+      .set('authorization', testingToken)
     expect(response.statusCode).toEqual(200)
     expect(response.body).toEqual({
       id: 1,
