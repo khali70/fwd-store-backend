@@ -72,6 +72,6 @@ Router.get('/', token, async (req, res) => {
       }
     }
   )
-  .get('/:userId/orders/:orderId', token, orderRoute)
+  .get('/:userId/order/', token, orderRoute)
 
 export default Router

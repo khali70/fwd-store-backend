@@ -5,10 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "start": "nodemon src/server.ts",
-    "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
-    "test": "jasmine-ts",
-    "tsc": "tsc",
-    "test:DB": "ENV=test db-migrate --env test up && jasmine-ts && db-migrate db:drop test"
+    "test": "ENV=test db-migrate --env test up && ENV=test jasmine-ts ;ENV=test db-migrate --env test down",
+    "build": "tsc"
   },
   "author": "Udacity",
   "license": "ISC",

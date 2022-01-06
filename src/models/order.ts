@@ -22,13 +22,13 @@ export class OrderStore {
     try {
       const conn = await client.connect()
       const orderProductsQuery = `
-      SELECT name ,price,quantity,price*quantity as total_price 
+      SELECT products.id,name ,price,quantity,price*quantity as total_price 
       FROM order_products
       JOIN products on products.id = product_id
       WHERE order_id=(SELECT MAX(id) FROM orders WHERE user_id=($1));`
 
       const userOrdersQuery = `
-      SELECT id,firstname|| ' ' || lastname as user_name , status
+      SELECT orders.id,firstname|| ' ' || lastname as user_name , status
       FROM orders
       JOIN users ON users.id = user_id
       WHERE orders.id =(SELECT MAX(id) FROM orders WHERE user_id=($1));`
@@ -43,7 +43,7 @@ export class OrderStore {
       conn.release()
       return { ...order, products: resultProducts.rows }
     } catch (error) {
-      throw new Error('Cannot get the orders' + error)
+      throw new Error('Cannot get the orders ' + error)
     }
   }
   async create(user_order: {

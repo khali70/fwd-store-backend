@@ -1,6 +1,7 @@
 node_modules
 .vscode
 .env
+build
 database.json
 *.i.*
 *.session.*

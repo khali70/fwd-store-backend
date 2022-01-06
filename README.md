@@ -4,7 +4,7 @@
 
 Your application must make use of the following libraries:
 
-- Postgres for the database
+- Postgres for the database (you can user docker for this)
 - Node for the application logic
 - yarn for node pkg manager
 
@@ -105,10 +105,35 @@ to start the app
 yarn run start
 ```
 
-### test
+### run unite test
 
-to test the app
+set the environment variable `ENV` to test and run
 
 ```
 yarn run test
 ```
+
+### Compiles and minifies for production
+
+```
+yarn run build
+```
+
+## API Endpoints
+
+#### Products
+
+- Index `get` at [product/](http://localhost:3000/product/)
+- Show `get` at [product/:productId](http://localhost:3000/product/1)
+- Create [token required] `post` at [product/](http://localhost:3000/product/)
+
+#### Users
+
+- Index [token required] `get` at [user/](http://localhost:3000/user)
+- Show [token required] `get` at [user/:userId](http://localhost:3000/user/1)
+- Create N[token required] `post` at [user/](http://localhost:3000/user)
+
+#### Orders
+
+- Current Order by user (args: user id)[token required] `get` at [user/:userId/product]
+- [OPTIONAL] Completed Orders by user (args: user id)[token required]
