@@ -33,39 +33,37 @@ Router.get('/', token, async (req, res) => {
   })
   .post(
     '/',
-    token,
     async (
       req: Request<
         Record<string, never>,
-        { token: string } | Error,
+        { token: string } | { error: unknown },
         { firstname: string; lastname: string; password: string }
       >,
       res
     ) => {
-      if (
-        req.body.firstname == undefined &&
-        req.body.password == undefined &&
-        req.body.lastname == undefined
-      ) {
+      if (req.body.firstname == undefined || req.body.password == undefined) {
+        console.log(req.body)
         res.status(401)
-
-        res.send(
-          Error(
-            `\
-            ${req.body.firstname ? '' : 'first name is required\n'}
-            ${req.body.lastname ? '' : 'last name is required\n'}
-            ${req.body.password ? '' : 'password is required'}`
-          )
-        )
+        res.send({
+          error: `${req.body.firstname ? '' : 'first name is required,'}${
+            req.body.password ? '' : 'password is required'
+          }`,
+        })
 
         return
       }
       try {
-        const salt = await bcrypt.genSalt(
-          parseInt(process.env.SALT_ROUNDS as string)
-        )
+        const salt = await bcrypt
+          .genSalt(parseInt(process.env.SALT_ROUNDS as string))
+          .catch((error) => {
+            throw Error(`can't generate salt ${error}`)
+          })
         const paper = process.env.BCRYPT_PASSWORD
-        const hash = await bcrypt.hash(req.body.password + paper, salt)
+        const hash = await bcrypt
+          .hash(req.body.password + paper, salt)
+          .catch((error) => {
+            throw Error(`can't hash password ${error}`)
+          })
         const password = hash
         const body = { ...req.body, password }
         const user = await store.create(body)
@@ -76,7 +74,7 @@ Router.get('/', token, async (req, res) => {
       } catch (error) {
         res.status(500)
         res.contentType('application/json')
-        res.send(error as Error)
+        res.send({ error })
       }
     }
   )

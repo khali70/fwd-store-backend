@@ -48,13 +48,23 @@ export class UserStore {
       throw new Error('Cannot update the user with id ' + id + 'error' + error)
     }
   }
+  async delete(id: string): Promise<user[]> {
+    try {
+      const conn = await client.connect()
+      const sql = 'DELETE FROM users WHERE id=($1)'
+      await conn.query(sql, [id])
+      const products = await conn.query<user>('SELECT * FROM users')
+      conn.release()
+      return products.rows
+    } catch (error) {
+      throw Error(`can't delete user with id:${id} Error ${error}`)
+    }
+  }
   async create(u: coreUser): Promise<user> {
     try {
       const conn = await client.connect()
-      const query = `SELECT * FROM users WHERE firstname=($1) AND lastname=($2)`
-      const isUser = await conn.query<user>(query, [u.firstname, u.lastname])
-      if (isUser.rows.length > 0)
-        throw Error('firstname and lastname is already used')
+      const query = `SELECT * FROM users WHERE firstname=($1)`
+      await conn.query<user>(query, [u.firstname])
       const sql =
         'INSERT INTO users (firstname, lastname,password) VALUES($1, $2, $3) RETURNING *'
       const result = await conn.query(sql, [
@@ -69,18 +79,6 @@ export class UserStore {
       throw Error(`can't create user with name ${u.firstname} error ${error}`)
     }
   }
-  async delete(id: string): Promise<user[]> {
-    try {
-      const conn = await client.connect()
-      const sql = 'DELETE FROM users WHERE id=($1)'
-      await conn.query(sql, [id])
-      const products = await conn.query<user>('SELECT * FROM users')
-      conn.release()
-      return products.rows
-    } catch (error) {
-      throw Error(`can't delete user with id:${id} Error ${error}`)
-    }
-  }
   async auth(firstname: string, password: string) {
     try {
       const conn = await client.connect()
@@ -89,8 +87,6 @@ export class UserStore {
       const u = result.rows[0]
       conn.release()
       const paper = process.env.BCRYPT_PASSWORD
-        ? process.env.BCRYPT_PASSWORD
-        : ''
       if (bcrypt.compareSync(password + paper, u.password)) {
         return u
       }

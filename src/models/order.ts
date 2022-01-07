@@ -72,9 +72,13 @@ export class OrderStore {
     }
   }
   async delete(id: string): Promise<void> {
-    const conn = await client.connect()
-    const sql = 'DELETE FROM orders WHERE id=($1)'
-    conn.query(sql, [id])
-    conn.release()
+    try {
+      const conn = await client.connect()
+      const sql = 'DELETE FROM orders WHERE id=($1)'
+      conn.query(sql, [id])
+      conn.release()
+    } catch (error) {
+      throw Error(`error ${error} can't delete user with id ${id}`)
+    }
   }
 }
