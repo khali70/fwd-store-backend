@@ -1,8 +1,8 @@
 import express, { Request } from 'express'
 import bcrypt from 'bcrypt'
-import jwd from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { user, UserStore } from '../models/user'
-import { orderRoute } from './orders'
+
 import dotenv from 'dotenv'
 import { token } from '../token'
 dotenv.config()
@@ -20,9 +20,9 @@ Router.get('/', token, async (req, res) => {
     res.send(error)
   }
 })
-  .get('/:userId', token, async (req: Request<{ userId: string }>, res) => {
+  .get('/:id', token, async (req: Request<{ id: string }>, res) => {
     try {
-      const user = await store.show(req.params.userId)
+      const user = await store.show(req.params.id)
       res.status(200)
       res.contentType('application/json')
       res.send(user)
@@ -37,13 +37,11 @@ Router.get('/', token, async (req, res) => {
     async (
       req: Request<
         Record<string, never>,
-        Partial<user> | Error,
+        { token: string } | Error,
         { firstname: string; lastname: string; password: string }
       >,
       res
     ) => {
-      // should create new user
-      // encrypt the password
       if (
         req.body.firstname == undefined &&
         req.body.password == undefined &&
@@ -64,16 +62,17 @@ Router.get('/', token, async (req, res) => {
       }
       try {
         const salt = await bcrypt.genSalt(
-          process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS) : 10
+          parseInt(process.env.SALT_ROUNDS as string)
         )
         const paper = process.env.BCRYPT_PASSWORD
         const hash = await bcrypt.hash(req.body.password + paper, salt)
         const password = hash
         const body = { ...req.body, password }
         const user = await store.create(body)
+        const token = jwt.sign(user, process.env.TOKEN_SECRET as string)
         res.status(200)
         res.contentType('application/json')
-        res.send(user)
+        res.send({ token })
       } catch (error) {
         res.status(500)
         res.contentType('application/json')
@@ -106,7 +105,7 @@ Router.get('/', token, async (req, res) => {
       try {
         const user = await store.auth(req.body.firstname, req.body.password)
         if (user) {
-          const token = jwd.sign(user, process.env.TOKEN_SECRET as string)
+          const token = jwt.sign(user, process.env.TOKEN_SECRET as string)
           res.status(200)
           res.contentType('application/json')
           res.send({ token })
@@ -121,6 +120,5 @@ Router.get('/', token, async (req, res) => {
       }
     }
   )
-  .get('/:userId/order/', token, orderRoute)
 
 export default Router

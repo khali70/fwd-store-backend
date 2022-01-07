@@ -1,10 +1,8 @@
-import { Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
 import { OrderStore } from '../models/order'
+import { token } from '../token'
 const store = new OrderStore()
-export const orderRoute = async (
-  req: Request<{ userId: string }>,
-  res: Response
-) => {
+const orderRoute = async (req: Request<{ userId: string }>, res: Response) => {
   if (req.params.userId == undefined) {
     res.status(401)
     res.contentType('application/json')
@@ -22,3 +20,6 @@ export const orderRoute = async (
     res.send({ Error: error })
   }
 }
+const route = Router()
+route.get('/:userId/order/', token, orderRoute)
+export default route

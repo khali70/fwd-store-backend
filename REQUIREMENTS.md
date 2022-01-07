@@ -10,7 +10,8 @@
 
 - `get`: [user/](http://localhost:3000/user) [token required]
 - `get`: [user/:userId](http://localhost:3000/user/1) [token required]
-- `post`: [user/](http://localhost:3000/user) [token required] `(firstname,lastname,password)`
+- `post`: [user/](http://localhost:3000/user) `(firstname,lastname,password)`
+- `post`: [user/](http://localhost:3000/user/auth) `(firstname,password)`
 
 ### Orders
 

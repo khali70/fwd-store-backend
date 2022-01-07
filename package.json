@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "start": "nodemon src/server.ts",
-    "test": "ENV=test db-migrate --env test up && ENV=test jasmine-ts ;ENV=test db-migrate --env test down",
+    "test": "ENV=test db-migrate up -c 5 --env test && ENV=test jasmine-ts ;ENV=test db-migrate down -c 5 --env test",
     "build": "tsc"
   },
   "author": "Udacity",

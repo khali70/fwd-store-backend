@@ -5,8 +5,8 @@
 INSERT INTO users 
 (firstName,lastName,password) 
 VALUES 
-('ahmed','khlifa','snaoehusac'),
-('abdo','khlifa','password'),
+('ahmed','khalifa','snaoehusac'),
+('abdo','khalifa','password'),
 ('test','user','password');
 
 INSERT INTO products 

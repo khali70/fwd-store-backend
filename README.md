@@ -10,7 +10,9 @@ Your application must make use of the following libraries:
 
 ## Project setup
 
-> ### the app runs on port `3000`
+> ### the app runs on port `3000` , Postgres on `5432`
+>
+> ### `yarn run start` to start the app
 
 ### DataBase setup
 
@@ -60,15 +62,15 @@ ENV=dev
 my `.env` was
 
 ```env
-POSTGRES_USER=root
 POSTGRES_PASSWORD=root
+POSTGRES_USER=root
 
 POSTGRES_DB=storefront
 POSTGRES_TEST_DB=storefront_test
 
 POSTGRES_HOST=127.0.0.1
 
-BCRYPT_PASSWORD=this!testy
+BCRYPT_PASSWORD=paper123
 SALT_ROUNDS=10
 
 TOKEN_SECRET=samalama123!
@@ -105,17 +107,17 @@ My `database.json` config was
 {
   "dev": {
     "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "storefront",
-    "user": "root",
-    "password": "root"
+    "host": { "ENV": "POSTGRES_HOST" },
+    "database": { "ENV": "POSTGRES_DB" },
+    "user": { "ENV": "POSTGRES_USER" },
+    "password": { "ENV": "POSTGRES_PASSWORD" }
   },
   "test": {
     "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "storefront_test",
-    "user": "root",
-    "password": "root"
+    "host": { "ENV": "POSTGRES_HOST" },
+    "database": { "ENV": "POSTGRES_TEST_DB" },
+    "user": { "ENV": "POSTGRES_USER" },
+    "password": { "ENV": "POSTGRES_PASSWORD" }
   }
 }
 ```

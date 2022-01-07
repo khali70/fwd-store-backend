@@ -51,6 +51,10 @@ export class UserStore {
   async create(u: coreUser): Promise<user> {
     try {
       const conn = await client.connect()
+      const query = `SELECT * FROM users WHERE firstname=($1) AND lastname=($2)`
+      const isUser = await conn.query<user>(query, [u.firstname, u.lastname])
+      if (isUser.rows.length > 0)
+        throw Error('firstname and lastname is already used')
       const sql =
         'INSERT INTO users (firstname, lastname,password) VALUES($1, $2, $3) RETURNING *'
       const result = await conn.query(sql, [

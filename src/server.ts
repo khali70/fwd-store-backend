@@ -5,6 +5,7 @@ import morgan from 'morgan'
 import client from './database'
 import productsRoute from './routes/products'
 import usersRoute from './routes/users'
+import ordersRoute from './routes/orders'
 import dotenv from 'dotenv'
 dotenv.config()
 const app = express()
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/user', usersRoute)
+app.use('/user', ordersRoute)
 app.use('/product', productsRoute)
 
 app.listen(3000, function () {
