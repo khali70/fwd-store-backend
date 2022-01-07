@@ -1,5 +1,8 @@
 node_modules
 .vscode
+# i keep the .env file to help the reviewer 
+# but added it to .gitignore as he said
+.env 
 build
 *.i.*
 *.session.*
