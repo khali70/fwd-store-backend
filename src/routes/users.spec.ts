@@ -1,7 +1,9 @@
 import client from '../database'
 import supertest from 'supertest'
 import app from '../server'
+import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
+import { compareHash } from '../crypto'
 dotenv.config()
 const request = supertest(app)
 const info = { token: '', user_id: 1 }
@@ -43,6 +45,7 @@ describe(`Users Route`, () => {
         lastname: 'user',
       },
     ])
+    expect(compareHash('password', user.password)).toEqual(true)
   })
 
   it('get /user/:userId with token should return the correct user', async () => {

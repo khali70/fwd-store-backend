@@ -35,5 +35,13 @@ export const getHash = async (password: string): Promise<string> => {
     throw Error(`can't hash password error ${error}`)
   }
 }
+export const compareHash = (
+  password: string,
+  encryptedPassword: string
+): boolean => {
+  const paper = process.env.BCRYPT_PASSWORD
+  const samePass = bcrypt.compareSync(password + paper, encryptedPassword)
+  return samePass
+}
 
 export const testingToken = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RuYW1lIjoiYWhtZWQiLCJsYXN0bmFtZSI6bnVsbCwicGFzc3dvcmQiOiIkMmIkMTAkZ0JJd29jbnRSME9IZGRCekhtaUFQZS90THpsR3dVemlwRWJ5dFpuZzNqbWFBbndQaUtCU3EiLCJpYXQiOjE2NDE0OTM2NjJ9.8uAdKcG-r57o5r8Zvnc7Xx-xYRhu7XDZ-MDAlxPM44s`
