@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import { ProductStore, product, coreProduct } from '../models/product'
-import { token } from '../token'
+import { token } from '../crypto'
 
 const Router = express.Router()
 const store = new ProductStore()

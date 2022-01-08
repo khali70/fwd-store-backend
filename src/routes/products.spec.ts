@@ -1,7 +1,7 @@
 import client from '../database'
 import supertest from 'supertest'
 import app from '../server'
-import { testingToken } from '../token'
+import { testingToken } from '../crypto'
 
 const request = supertest(app)
 

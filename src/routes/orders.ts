@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 import { OrderStore } from '../models/order'
-import { token } from '../token'
+import { token } from '../crypto'
 const store = new OrderStore()
 const orderRoute = async (req: Request<{ userId: string }>, res: Response) => {
   if (req.params.userId == undefined) {

@@ -79,7 +79,7 @@ export class UserStore {
       throw Error(`can't create user with name ${u.firstname} error ${error}`)
     }
   }
-  async auth(firstname: string, password: string) {
+  async auth(firstname: string, password: string): Promise<user> {
     try {
       const conn = await client.connect()
       const query = `SELECT * FROM users WHERE firstname=($1)`
@@ -89,8 +89,9 @@ export class UserStore {
       const paper = process.env.BCRYPT_PASSWORD
       if (bcrypt.compareSync(password + paper, u.password)) {
         return u
+      } else {
+        throw Error(`user is not found`)
       }
-      return null
     } catch (error) {
       throw new Error(
         'Cannot auth the user with name ' + firstname + ' error' + error

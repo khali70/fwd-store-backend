@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import { user, UserStore } from '../models/user'
 
 import dotenv from 'dotenv'
-import { token } from '../token'
+import { getHash, token } from '../crypto'
 dotenv.config()
 const Router = express.Router()
 const store = new UserStore()
@@ -53,17 +53,7 @@ Router.get('/', token, async (req, res) => {
         return
       }
       try {
-        const salt = await bcrypt
-          .genSalt(parseInt(process.env.SALT_ROUNDS as string))
-          .catch((error) => {
-            throw Error(`can't generate salt ${error}`)
-          })
-        const paper = process.env.BCRYPT_PASSWORD
-        const hash = await bcrypt
-          .hash(req.body.password + paper, salt)
-          .catch((error) => {
-            throw Error(`can't hash password ${error}`)
-          })
+        const hash = await getHash(req.body.password)
         const password = hash
         const body = { ...req.body, password }
         const user = await store.create(body)

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 dotenv.config()
 export const token = async (
@@ -20,6 +21,18 @@ export const token = async (
     res.status(403)
     res.contentType('application/json')
     res.send({ error: 'invalid token JWT must be provided' })
+  }
+}
+export const getHash = async (password: string): Promise<string> => {
+  try {
+    const salt = await bcrypt.genSalt(
+      parseInt(process.env.SALT_ROUNDS as string)
+    )
+    const paper = process.env.BCRYPT_PASSWORD
+    const hash = await bcrypt.hash(password + paper, salt)
+    return hash
+  } catch (error) {
+    throw Error(`can't hash password error ${error}`)
   }
 }
 

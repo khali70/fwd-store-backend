@@ -1,7 +1,5 @@
 import { OrderStore } from './order'
 import dotenv from 'dotenv'
-import { ProductStore } from './product'
-import { UserStore } from './user'
 import client from '../database'
 dotenv.config()
 const store = new OrderStore()
